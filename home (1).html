@@ -1,0 +1,163 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Medkor | Accountdetails</title>
+    <script type = "module" src="https://www.gstatic.com/firebasejs/9.8.2/firebase-storage.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+		<div class = "accountnav">
+            <label id="accinfolbl"></label>
+			<button id="accinfobtn">Account Information</button>
+		</div>
+	</header>
+    <div id="schedule-form" style="    margin-left: 10%;background-color: f1f1f1;border-radius: 10px;margin-right: 50%;">
+      <div id="schedulecontainer" style="margin-left: 10px;">
+        <h2>Schedule</h2>
+        <p>Schedule an appointment with your patients.</p>
+
+        <input style="margin-bottom: 5px;" type="email" id="forwhoemail" placeholder="For who | use patient' email" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="purpose" placeholder="Purpose" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="description" placeholder="Description" required/><br>
+        <label>Date and Time</label><br>
+        <input type="date" id="dateselect" placeholder="Date" required/>
+        <input type="time" id="timeselect" placeholder="Time" required/><br>
+        <input style="margin-top: 5px;margin-bottom: 5px;" type="text" id="profid" placeholder="Your work ID" required/><br>
+
+        <button style="margin-bottom: 5px;" id="scheduledone">Done</button>
+      </div>
+    </div>
+
+    <div id="patientform" style="margin-left: 10%;background-color: f1f1f1;border-radius: 10px;margin-right: 50%;">
+      <div id="patientcontainer" style="margin-left: 10px;">
+        <h2>Patient's Medical Information</h2>
+        <p>Patients Medical Information must be written here, their conditions, alergies etc. documents such as x-rays,
+            results, and prescritptions must be sent through here too.
+        </p>
+        <input style="margin-bottom: 5px;" type="text" id="patientemail" placeholder="Patient Email" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="patientphysician" placeholder="Your Work id" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="bodytemp" placeholder="Body Temperature" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="bloodpres" placeholder="Blood Pressure" required/><br>
+        <input style="margin-bottom: 5px;" type="text" id="resprate" placeholder="Respiration Rate" required/><br>
+        <input style="margin-bottom: 20px;" type="text" id="heartrate" placeholder="Heart Rate" required/><br>
+
+        <h2> Conditions </h2>
+        <p style="margin-top: 0px;margin-bottom:0px">To add more conditions, simply use a comma</p>
+        <input style="margin-bottom: 20px;" type="text" id="medconditions" placeholder="Condition"/><br>
+
+        <h2> Allergies </h2>
+        <p style="margin-bottom: 0px;margin-top: 0px;">To add more allergies, simply use a comma</p>
+        <input style="margin-bottom: 20px;" type="text" id="medallergies" placeholder="Allergy"/><br><br>
+
+        <button id="patientformdone">Done</button><br><br>
+
+        <h2 style="margin-right: 20px;">Upload documents here</h2>
+        <button onclick="window.location.href='index.html'" style="margin-bottom: 10px;">Continue</button>
+      </div>
+    </div>
+</body>
+
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-app.js";
+    import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-database.js";
+    import { getStorage } from "https://www.gstatic.com/firebasejs/9.8.2/firebase-storage.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfnU1aoVz3K4Y_tCTDHxbelcGPFPvknKc",
+      authDomain: "medkor-bcf69.firebaseapp.com",
+      databaseURL: "https://medkor-bcf69-default-rtdb.firebaseio.com",
+      projectId: "medkor-bcf69",
+      storageBucket: "medkor-bcf69.appspot.com",
+      messagingSenderId: "374865749332",
+      appId: "1:374865749332:web:d7c6efe1068cc1e866d4c1",
+      measurementId: "G-WBCKYHY7B3"
+    };
+  
+      // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+    // get data
+    /*finddone.addEventListener('click',(e) => {
+        var findemail = document.getElementById('profemail').value;
+        const starCountRef = ref(database, 'users/' + findemail);
+        onValue(starCountRef, (snapshot) => {
+            const data = snapshot.val(); // data = all data on firebse
+            document.getElementById('physician').value = data.email;
+        });
+     });*/
+
+    scheduledone.addEventListener('click',(e) => {
+      var foremail = document.getElementById('forwhoemail').value;
+      var purpose = document.getElementById('purpose').value;
+      var description = document.getElementById('description').value;
+      var date = document.getElementById('dateselect').value;
+      var time = document.getElementById('timeselect').value;
+      var physician = document.getElementById('profid').value;
+  
+      set(ref(database, 'schedule/' + physician), {
+  
+        foremail: foremail,
+        purpose: purpose,
+        description: description,
+        date : date,
+        time : time,
+        physician: physician
+  
+       });
+  
+      alert('Schedule made');
+
+    });
+
+    patientformdone.addEventListener('click',(e) => {
+        var patientemail = document.getElementById('patientemail').value;
+        var physician = document.getElementById('patientphysician').value;
+        var bodyTemperature = document.getElementById('bodytemp').value;
+        var bloodPressure = document.getElementById('bloodpres').value;
+        var respirationTemperature = document.getElementById('resprate').value;
+        var heartRete = document.getElementById('heartrate').value;
+
+        var condition = document.getElementById('medconditions').value;
+        var allergies = document.getElementById('medallergies').value;
+  
+        set(ref(database, 'medicalinformation/' + physician), {
+    
+            patientemail: patientemail,
+            physician: physician,
+            bodyTemperature: bodyTemperature,
+            bloodPressure: bloodPressure,
+            respirationTemperature: respirationTemperature,
+            heartRete : heartRete,
+            condition : condition,
+            allergies: allergies
+    
+        });
+            alert('Patient Information Edited.');
+        });
+  
+      // update data
+      /*updateData.addEventListener('click',(e) => {
+       var username = document.getElementById('username').value;
+       var email = document.getElementById('email').value;
+        
+      update(ref(database, 'users/' + username),{
+        email: email,
+        username: username, 
+        })
+        alert('updated');
+      });
+  
+      // remove data
+      removeData.addEventListener('click',(e) => {
+       var username = document.getElementById('username').value;
+      
+       remove(ref(database, 'users/' + username));
+       alert('removed');
+      });*/
+      
+  </script>
+</html>
